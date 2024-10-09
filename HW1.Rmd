@@ -71,7 +71,8 @@ There is some extreme and error values that need to be removed. We need to remov
 
 ```{r}
 #remove extreme values
-clean_smoke <- df[df$smoke == 0 | df$smoke == 1,]
+clean_age <- df[df$age <50,]
+clean_smoke <- clean_age[clean_age$smoke == 0 | clean_age$smoke == 1,]
 clean_weight<- clean_smoke[clean_smoke$weight < 300,]
 clean_height <- clean_weight[clean_weight$height < 90,]
 df_clean <- clean_height[clean_height$gestation < 365,]
@@ -85,42 +86,45 @@ summary(df_clean)
 
 1C. This dataset qualifies SRS because the data is large enough, and every data could be selected.
 
+```{r}
+```
+
 2a. 
 ```{r}
 aggregate(bwt ~ smoke, df_clean, min)
 aggregate(bwt ~ smoke, df_clean, max)
-smoker_min_bwt = 78
+smoker_min_bwt = 58
 smoker_max_bwt = 163
 
-nonsmoker_min_bwt = 78
-nonsmoker_max_bwt = 164
+nonsmoker_min_bwt = 55
+nonsmoker_max_bwt = 176
 
 aggregate(bwt ~ smoke, df_clean, mean)
 
-nonsmoker_mean_bwt = 123.4241
-smoker_mean_bwt = 115.2343
+nonsmoker_mean_bwt = 123.0853
+smoker_mean_bwt = 113.8192
 
 aggregate(bwt ~ smoke, df_clean, median)
 
-nonsmoker_median_bwt = 124
+nonsmoker_median_bwt = 123
 smoker_median_bwt = 115
 
 
-aggregate(bwt ~ smoke, df_clean, function(x) quantile(x, 0.25))
-smoker_q1_bwt = 103
+aggregate(bwt ~ smok, df_clean, function(x) quantile(x, 0.25))
+smoker_q1_bwt = 101
 nonsmoker_q1_bwt = 113
 
 aggregate(bwt ~ smoke, df_clean, function(x) quantile(x, 0.5))
 smoker_q2_bwt = 115
-nonsmoker_q2_bwt = 124
+nonsmoker_q2_bwt = 123
 
 aggregate(bwt ~ smoke, df_clean, function(x) quantile(x, 0.75))
 smoker_q3_bwt = 126
-nonsmoker_q3_bwt = 133
+nonsmoker_q3_bwt = 134
 
 aggregate(bwt ~ smoke, df_clean, sd)
-smoker_std_bwt = 16.76733
-nonsmoker_std_bwt = 15.15593
+smoker_std_bwt = 17.42370
+nonsmoker_std_bwt = 18.29501
 ```
 The mean of nonsmoker bwt is the same as the median of nonsmoker bwt, so the distribution is symmetric. Same with the smoker bwt.
 
