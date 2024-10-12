@@ -12,7 +12,7 @@ Our objective is to study the difference in weight between babies born to mother
 ## Check the variables type:
 ```{r}
 df <- read.table(file = "babies.txt", header = TRUE)
-df
+head(df)
 ```
 Check the variable type
 
@@ -22,28 +22,27 @@ type <- str(df)
 Summary of variable:
 ```{r}
 summary(df)
-bwt_description="Numerical, Min:55.0, Median 120.0, Max: 176.0, Mean: 119.6"
-gestation_description = "Numerical, Min: 148.0, Median: 280.0, Max: 999.0, Mean: 286.9"
-parity_description = "Categorical (ordinal), Min: 0, Median:0, Max: 1.0000, Mean: 0.2549"
-age_description = "Numerical, Min: 15.00, Median: 26.00, Max: 99.00, Mean: 27.37"
-height_description = "Numerical, Min: 53.00, Median: 64.00, Max: 99.00, Mean: 64.67"
-weight_description = "Numerical, Min: 87, Median: 126, Max:999, Mean: 154"
-smoke_description = "Categorical, Min: 0, Median: 0, Max: 9.0, Mean: 0.4644"
+bwt_description <- "Numerical, Min:55.0, Median 120.0, Max: 176.0, Mean: 119.6"
+gestation_description <- "Numerical, Min: 148.0, Median: 280.0, Max: 999.0, Mean: 286.9"
+parity_description <- "Categorical (ordinal), Min: 0, Median:0, Max: 1.0000, Mean: 0.2549"
+age_description <- "Numerical, Min: 15.00, Median: 26.00, Max: 99.00, Mean: 27.37"
+height_description <- "Numerical, Min: 53.00, Median: 64.00, Max: 99.00, Mean: 64.67"
+weight_description <- "Numerical, Min: 87, Median: 126, Max:999, Mean: 154"
+smoke_description <- "Categorical, Min: 0, Median: 0, Max: 9.0, Mean: 0.4644"
 ```
 
 Histogram of each variables:
 ```{r}
-hist(df$bwt, main = 'Histogram of bwt',xlab = 'weight',freq=FALSE)
-hist(df$gestation, main = 'Histogram of gestation',xlab = 'gestation',breaks =15,
-,freq=FALSE)
-hist(df$parity,main = 'Parity', freq=FALSE)
-hist(df$age,main = 'Age', freq=FALSE, xlab='age')
-hist(df$height,main = 'Height', freq=FALSE, xlab='Inches')
-hist(df$weight,main = 'Weight', freq=FALSE, xlab='Pounds')
-hist(df$smoke,main = 'smoke', freq=FALSE, xlab='0(no smoke) 1(smoke)', breaks = 20)
-
-
-
+hist(df$bwt, main = "Histogram of bwt", xlab = "weight", freq = FALSE)
+hist(df$gestation,
+  main = "Histogram of gestation", xlab = "gestation", breaks = 15, ,
+  freq = FALSE
+)
+hist(df$parity, main = "Parity", freq = FALSE)
+hist(df$age, main = "Age", freq = FALSE, xlab = "age")
+hist(df$height, main = "Height", freq = FALSE, xlab = "Inches")
+hist(df$weight, main = "Weight", freq = FALSE, xlab = "Pounds")
+hist(df$smoke, main = "smoke", freq = FALSE, xlab = "0(no smoke) 1(smoke)", breaks = 20)
 ```
 
 
@@ -55,96 +54,106 @@ find_outliers_IQR <- function(column) {
   Q1 <- quantile(column, 0.25)
   Q3 <- quantile(column, 0.75)
   IQR_value <- IQR(column)
-  
+
   lower_bound <- Q1 - 1.5 * IQR_value
   upper_bound <- Q3 + 1.5 * IQR_value
-  
-  return (column[column<lower_bound | column > upper_bound])
+
+  return(column[column < lower_bound | column > upper_bound])
 }
 
 #
 outliers <- lapply(df, find_outliers_IQR)
-
-
 ```
 There is some extreme and error values that need to be removed. We need to remove all the values besides 0 and 1 in smoke value. It is not possible that a person is 99 inches tall or weight 999 pounds.
 
 ```{r}
-#remove extreme values
-clean_age <- df[df$age <50,]
-clean_smoke <- clean_age[clean_age$smoke == 0 | clean_age$smoke == 1,]
-clean_weight<- clean_smoke[clean_smoke$weight < 300,]
-clean_height <- clean_weight[clean_weight$height < 90,]
-df_clean <- clean_height[clean_height$gestation < 365,]
+# remove extreme values
+df_clean <- na.omit(df)
+clean_age <- df[df$age < 50, ]
+clean_smoke <- clean_age[clean_age$smoke == 0 | clean_age$smoke == 1, ]
+clean_weight <- clean_smoke[clean_smoke$weight < 300, ]
+clean_height <- clean_weight[clean_weight$height < 90, ]
+df_clean <- clean_height[clean_height$gestation < 365, ]
 df_clean
 ```
 
 ```{r}
-
 summary(df_clean)
 ```
-
-1C. This dataset qualifies SRS because the data is large enough, and every data could be selected.
-
+Histogram of df_clean
 ```{r}
+hist(df_clean$bwt, main = "Histogram of bwt", xlab = "weight", freq = FALSE)
+hist(df_clean$gestation,
+  main = "Histogram of gestation", xlab = "gestation", breaks = 15, ,
+  freq = FALSE
+)
+hist(df_clean$parity, main = "Parity", freq = FALSE)
+hist(df_clean$age, main = "Age", freq = FALSE, xlab = "age")
+hist(df_clean$height, main = "Height", freq = FALSE, xlab = "Inches")
+hist(df_clean$weight, main = "Weight", freq = FALSE, xlab = "Pounds")
+hist(df_clean$smoke, main = "smoke", freq = FALSE, xlab = "0(no smoke) 1(smoke)", breaks = 20)
 ```
+1C. This dataset qualifies SRS because the data is large enough, and every data could be selected.
 
 2a. 
 ```{r}
 aggregate(bwt ~ smoke, df_clean, min)
 aggregate(bwt ~ smoke, df_clean, max)
-smoker_min_bwt = 58
-smoker_max_bwt = 163
+smoker_min_bwt <- 58
+smoker_max_bwt <- 163
 
-nonsmoker_min_bwt = 55
-nonsmoker_max_bwt = 176
+nonsmoker_min_bwt <- 55
+nonsmoker_max_bwt <- 176
 
 aggregate(bwt ~ smoke, df_clean, mean)
 
-nonsmoker_mean_bwt = 123.0853
-smoker_mean_bwt = 113.8192
+nonsmoker_mean_bwt <- 123.0853
+smoker_mean_bwt <- 113.8192
 
 aggregate(bwt ~ smoke, df_clean, median)
 
-nonsmoker_median_bwt = 123
-smoker_median_bwt = 115
+nonsmoker_median_bwt <- 123
+smoker_median_bwt <- 115
 
 
-aggregate(bwt ~ smok, df_clean, function(x) quantile(x, 0.25))
-smoker_q1_bwt = 101
-nonsmoker_q1_bwt = 113
+aggregate(bwt ~ smoke, df_clean, function(x) quantile(x, 0.25))
+smoker_q1_bwt <- 101
+nonsmoker_q1_bwt <- 113
 
 aggregate(bwt ~ smoke, df_clean, function(x) quantile(x, 0.5))
-smoker_q2_bwt = 115
-nonsmoker_q2_bwt = 123
+smoker_q2_bwt <- 115
+nonsmoker_q2_bwt <- 123
 
 aggregate(bwt ~ smoke, df_clean, function(x) quantile(x, 0.75))
-smoker_q3_bwt = 126
-nonsmoker_q3_bwt = 134
+smoker_q3_bwt <- 126
+nonsmoker_q3_bwt <- 134
 
 aggregate(bwt ~ smoke, df_clean, sd)
-smoker_std_bwt = 17.42370
-nonsmoker_std_bwt = 18.29501
+smoker_std_bwt <- 17.42370
+nonsmoker_std_bwt <- 18.29501
 ```
 The mean of nonsmoker bwt is the same as the median of nonsmoker bwt, so the distribution is symmetric. Same with the smoker bwt.
 
 
 ```{r}
-boxplot(bwt ~ smoke, data = df_clean,
-        main = "Birth Weight Distribution by Smoking Status",
-        xlab = "Smoking Status (0 = Non-Smoker, 1 = Smoker)",
-        ylab = "Birth Weight",
-        col = c("lightblue", "lightpink"),
-        border = "darkblue")
+boxplot(bwt ~ smoke,
+  data = df_clean,
+  main = "Birth Weight Distribution by Smoking Status",
+  xlab = "Smoking Status (0 = Non-Smoker, 1 = Smoker)",
+  ylab = "Birth Weight",
+  col = c("lightblue", "lightpink"),
+  border = "darkblue"
+)
 ```
 
 ```{r}
-
 ggplot(df_clean, aes(x = bwt, fill = as.factor(smoke))) +
   geom_density(alpha = 0.5) +
-  labs(title = "Density Plot of Birth Weiinght by Smoking Status",
-       x = "Birth Weight",
-       fill = "Smoking Status (0 = Non-Smoker, 1 = Smoker)") +
+  labs(
+    title = "Density Plot of Birth Weight by Smoking Status",
+    x = "Birth Weight",
+    fill = "Smoking Status (0 = Non-Smoker, 1 = Smoker)"
+  ) +
   scale_fill_manual(values = c("lightblue", "lightpink"))
 ```
 
@@ -153,13 +162,13 @@ ggplot(df_clean, aes(x = bwt, fill = as.factor(smoke))) +
 
 ```{r}
 low_bwt_smoker <- sum(df_clean$bwt[df_clean$smoke == 1] < 100) / sum(df_clean$smoke == 1)
-low_bwt_smoker = 0.1835749
+low_bwt_smoker <- 0.1835749
 
-low_bwt_nonsmoker <- sum(df_clean$bwt[df_clean$smoke == 0] < 100) / sum(df_clean$smoke ==0 )
-low_bwt_nonsmoker = 0.05320814
+low_bwt_nonsmoker <- sum(df_clean$bwt[df_clean$smoke == 0] < 100) / sum(df_clean$smoke == 0)
+low_bwt_nonsmoker <- 0.05320814
 ```
 If we change the threshold, for example from 100 to 90, then fewer baby would be considered as lower weight, which also reduce the incidence rate. 
-If we change the threshold to 105 then more baby would considered as lower wieght, the incidence rate increase.
+If we change the threshold to 105 then more baby would considered as lower wieght, the incidence rate increases.
 
 If the threshold becomes 90, the incidence rate would reduce for both groups. However, the difference between smoker and nonsmoker may become less pronounced. There may be babies that are already lower than 95 from smoker group.
 
