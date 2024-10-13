@@ -53,18 +53,8 @@ clean_weight <- clean_smoke[clean_smoke$weight < 300, ] # Remove mothers weighin
 clean_height <- clean_weight[clean_weight$height < 90, ] # Remove mothers taller than 90 inches
 df_clean <- clean_height[clean_height$gestation < 365, ] # Remove gestation periods greater than 365 days
 
-# Display the cleaned dataset and its summary
-df_clean
+# Display the cleaned summary
 summary(df_clean)
-
-# Re-plot histograms for the cleaned data
-hist(df_clean$bwt, main = "Histogram of bwt", xlab = "weight", freq = FALSE)
-hist(df_clean$gestation, main = "Histogram of gestation", xlab = "gestation", breaks = 15, freq = FALSE)
-hist(df_clean$parity, main = "Parity", freq = FALSE)
-hist(df_clean$age, main = "Age", freq = FALSE, xlab = "age")
-hist(df_clean$height, main = "Height", freq = FALSE, xlab = "Inches")
-hist(df_clean$weight, main = "Weight", freq = FALSE, xlab = "Pounds")
-hist(df_clean$smoke, main = "smoke", freq = FALSE, xlab = "0(no smoke) 1(smoke)", breaks = 20)
 
 # Aggregate summary statistics (min, max, mean, median, quartiles, standard deviation) for birth weight by smoking status
 aggregate(bwt ~ smoke, df_clean, min)
